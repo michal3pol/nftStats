@@ -1,0 +1,19 @@
+{
+  "name": "nftstats",
+  "version": "1.0.0",
+  "description": "nft-stats-app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michal3pol/nftStats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michal3pol/nftStats/issues"
+  },
+  "homepage": "https://github.com/michal3pol/nftStats#readme"
+}
