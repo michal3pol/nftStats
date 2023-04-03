@@ -1,0 +1,12 @@
+wykorzystać pattern "odwiedzający" do tego ze użytkownik wybiera jakie informacje chce porównywać a później klasa obsługuje wszystko
+
+
+//
+aktor pobiera computeRarity
+oblicza srednia z wszyskich rarity 
+i pozniej get transfers for contract, podzielic na page'e
+
+///
+getnftsales - jest buyer i seller address 
+mozna sprawdzic jakie maja getNftsForOwner i cos z tego kontraktu 
+
