@@ -10,3 +10,9 @@ i pozniej get transfers for contract, podzielic na page'e
 getnftsales - jest buyer i seller address 
 mozna sprawdzic jakie maja getNftsForOwner i cos z tego kontraktu 
 
+// budowanie zrodel
+npm run build
+
+// uzycie clingo doctor co sprawdza obciazenie 
+clinic doctor --autocannon "--" node .\dist\src\index.js
+
