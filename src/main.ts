@@ -1,4 +1,5 @@
 import { NftSaleMarketplace } from "alchemy-sdk";
+// import { ActorServiceHelper } from "./actors/ActorServicHelper";
 import { AlchemyApiService } from "./services/AlchemyApiService"
 
 /*
@@ -8,22 +9,6 @@ import { AlchemyApiService } from "./services/AlchemyApiService"
 // 0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258 -> Otherdeed is the key to claiming land in Otherside
 const conctractAddress = "0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258"; 
 
-
-
-export class NftSeekerActor {
-    
-    constructor() {
-        
-    }
-
-    async seekNftsForOwner(buyerAddress: string) {
-        console.log("this is me actor and i received this address " + buyerAddress)
-        //const alchemyApiService = new AlchemyApiService();
-        //const nfts = await alchemyApiService.getNftsForOwner(buyerAddress);
-        return "bajo jajo"; 
-    }
-
-}
 
 export class Main {
 
@@ -62,22 +47,25 @@ export class Main {
             marketplace: NftSaleMarketplace.SEAPORT,
         };
         const nftSalesResponse = await this.alchemyApiService.getNftSales(options);
-        console.log(nftSalesResponse.nftSales.length)
-        for(let i =0 ; i< 7; i++) {
-            console.log(nftSalesResponse.nftSales[i].buyerAddress)
-        }
-        
+        // console.log(nftSalesResponse.nftSales.length)
+        // for(let i =0 ; i< 7; i++) {
+        //     console.log(nftSalesResponse.nftSales[i].buyerAddress)
+        // }
+
+        var actorSystem = actors({
+            resources: ["/dist/src/actors/ActorServiceHelper"]
+          });
 
         actorSystem
         // Get a root actor reference.
         .rootActor()
         // Create a class-defined child actor.
-        .then((rootActor: any) => rootActor.createChild(NftSeekerActor, {
+        .then((rootActor: any) => rootActor.createChild('/dist/src/actors/NftSeekerActor', {
             mode: 'forked', // Spawn separate process.
             clusterSize: 3 // Spawn 3 instances of this actor to load-balance over.
         }))
         .then((myActor: any) => {
-            // Sequentially send 6 messages to our newly-created actor cluster.
+            // Sequentially send messages to our newly-created actor cluster.
             // The messages will be load-balanced between 3 forked actors using
             // the default balancing strategy (round-robin).
             return P.each([0, 1, 2, 3, 4, 5, 6], (number: any) => {

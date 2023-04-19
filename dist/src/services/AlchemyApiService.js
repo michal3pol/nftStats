@@ -47,3 +47,4 @@ class AlchemyApiService {
     }
 }
 exports.AlchemyApiService = AlchemyApiService;
+exports.default = AlchemyApiService;

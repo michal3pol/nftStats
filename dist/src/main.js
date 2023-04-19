@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Main = exports.NftSeekerActor = void 0;
+exports.Main = void 0;
 const alchemy_sdk_1 = require("alchemy-sdk");
 /*
     CONFIGURATION
@@ -17,19 +17,6 @@ const alchemy_sdk_1 = require("alchemy-sdk");
 // go to https://opensea.io/ and search for trending collections
 // 0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258 -> Otherdeed is the key to claiming land in Otherside
 const conctractAddress = "0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258";
-class NftSeekerActor {
-    constructor() {
-    }
-    seekNftsForOwner(buyerAddress) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log("this is me actor and i received this address " + buyerAddress);
-            //const alchemyApiService = new AlchemyApiService();
-            //const nfts = await alchemyApiService.getNftsForOwner(buyerAddress);
-            return "bajo jajo";
-        });
-    }
-}
-exports.NftSeekerActor = NftSeekerActor;
 class Main {
     constructor(alchemyApiService) {
         this.alchemyApiService = alchemyApiService;
@@ -59,20 +46,23 @@ class Main {
                 marketplace: alchemy_sdk_1.NftSaleMarketplace.SEAPORT,
             };
             const nftSalesResponse = yield this.alchemyApiService.getNftSales(options);
-            console.log(nftSalesResponse.nftSales.length);
-            for (let i = 0; i < 7; i++) {
-                console.log(nftSalesResponse.nftSales[i].buyerAddress);
-            }
+            // console.log(nftSalesResponse.nftSales.length)
+            // for(let i =0 ; i< 7; i++) {
+            //     console.log(nftSalesResponse.nftSales[i].buyerAddress)
+            // }
+            var actorSystem = actors({
+                resources: ["/dist/src/actors/ActorServiceHelper"]
+            });
             actorSystem
                 // Get a root actor reference.
                 .rootActor()
                 // Create a class-defined child actor.
-                .then((rootActor) => rootActor.createChild(NftSeekerActor, {
+                .then((rootActor) => rootActor.createChild('/dist/src/actors/NftSeekerActor', {
                 mode: 'forked',
                 clusterSize: 3 // Spawn 3 instances of this actor to load-balance over.
             }))
                 .then((myActor) => {
-                // Sequentially send 6 messages to our newly-created actor cluster.
+                // Sequentially send messages to our newly-created actor cluster.
                 // The messages will be load-balanced between 3 forked actors using
                 // the default balancing strategy (round-robin).
                 return P.each([0, 1, 2, 3, 4, 5, 6], (number) => {

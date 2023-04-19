@@ -8,16 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NftSeekerActor = void 0;
 class NftSeekerActor {
-    constructor() {
+    constructor(alchemyApiService) {
+        this.alchemyApiService = alchemyApiService;
     }
     seekNftsForOwner(buyerAddress) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("this is me actor and i received this address " + buyerAddress);
-            //const nfts = await this.alchemyApiService.getNftsForOwner(buyerAddress);
-            //console.log("kuap" + nfts.ownedNfts)
-            return "bajojajo";
+            const nfts = yield this.alchemyApiService.getNftsForOwner(buyerAddress);
+            return "bajo";
         });
     }
+    static inject() {
+        return ["ActorServiceHelper"];
+    }
+    initialize(selfActor) {
+        this.log = selfActor.getLog();
+    }
 }
-module.exports = NftSeekerActor;
+exports.NftSeekerActor = NftSeekerActor;
+exports.default = NftSeekerActor;

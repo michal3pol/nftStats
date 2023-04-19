@@ -32,3 +32,4 @@ export class AlchemyApiService {
     }
 
 } 
+export default AlchemyApiService;
