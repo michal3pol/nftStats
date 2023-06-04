@@ -1,4 +1,7 @@
 import { AlchemyApiService } from "../services/AlchemyApiService";
+import { NftSale } from "alchemy-sdk";
+import { UltraRarityData } from "./../NftsModels";
+
 
 export class NftSeekerActor {
     
@@ -11,10 +14,23 @@ export class NftSeekerActor {
         this.alchemyApiService = alchemyApiService;
     }
 
-    async seekNftsForOwner(buyerAddress: string) {
-        console.log("this is me actor and i received this address " + buyerAddress)
-        const nfts = await this.alchemyApiService.getNftsForOwner(buyerAddress);
-        return "bajo"; 
+    async seekNftsForOwner(nftSale: NftSale) {
+        const rarity = await this.alchemyApiService.computeRarity(nftSale.contractAddress, nftSale.tokenId)
+        const ultraRarity = rarity.filter(
+                                attribute => attribute.prevalence <= 0.001
+        )
+        if (ultraRarity.length == 0) {
+            return; 
+        }
+
+        const data: UltraRarityData = {
+            attributes: ultraRarity,
+            buyer: nftSale.buyerAddress,
+            seller: nftSale.sellerAddress,
+            isSpam: await this.alchemyApiService.isSpamContract(nftSale.contractAddress),
+            floorPrice: await this.alchemyApiService.getFloorPrice(nftSale.contractAddress)
+        }
+        return data;
     }
 
     static inject() {

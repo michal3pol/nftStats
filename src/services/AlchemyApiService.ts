@@ -31,5 +31,13 @@ export class AlchemyApiService {
         return await this.alchemy.nft.getNftsForOwner(owner)
     }
 
+    async isSpamContract(address: string) {
+        return await this.alchemy.nft.isSpamContract(address)
+    }
+
+    async getFloorPrice(address: string) {
+        return await this.alchemy.nft.getFloorPrice(address)
+    }
+
 } 
 export default AlchemyApiService;

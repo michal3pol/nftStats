@@ -1,5 +1,5 @@
 import { NftSaleMarketplace } from "alchemy-sdk";
-// import { ActorServiceHelper } from "./actors/ActorServicHelper";
+import { UltraRarityData } from "./NftsModels";
 import { AlchemyApiService } from "./services/AlchemyApiService"
 
 /*
@@ -7,6 +7,7 @@ import { AlchemyApiService } from "./services/AlchemyApiService"
 */
 // go to https://opensea.io/ and search for trending collections
 // 0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258 -> Otherdeed is the key to claiming land in Otherside
+
 const conctractAddress = "0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258"; 
 
 
@@ -16,7 +17,7 @@ export class Main {
         private alchemyApiService: AlchemyApiService
     ) {
     }
-
+    
     async execute() {
         // const nftCollection = await this.alchemyApiService.getNftsForContract(conctractAddress);    
         
@@ -41,6 +42,8 @@ export class Main {
         */  
         var actors = require('comedy');
         var P = require('bluebird');
+        const fs = require('fs');
+
         var actorSystem = actors();
 
         let options = {
@@ -53,32 +56,58 @@ export class Main {
         // }
 
         var actorSystem = actors({
-            resources: ["/dist/src/actors/ActorServiceHelper"]
+            resources: ["/dist/actors/ActorServiceHelper"]
           });
+
+        // number of responses to search 
+        const N = 10;
+        const arrIterator = Array.from({ length: N }, (_, index) => index + 1);
+
+        var programOutput!: UltraRarityData[];
 
         actorSystem
         // Get a root actor reference.
         .rootActor()
         // Create a class-defined child actor.
-        .then((rootActor: any) => rootActor.createChild('/dist/src/actors/NftSeekerActor', {
+        .then((rootActor: any) => rootActor.createChild('/dist/actors/NftSeekerActor', {
             mode: 'forked', // Spawn separate process.
-            clusterSize: 3 // Spawn 3 instances of this actor to load-balance over.
+            clusterSize: 3 // Spawn instances of this actor to load-balance over.
         }))
         .then((myActor: any) => {
             // Sequentially send messages to our newly-created actor cluster.
-            // The messages will be load-balanced between 3 forked actors using
+            // The messages will be load-balanced between forked actors using
             // the default balancing strategy (round-robin).
-            return P.each([0, 1, 2, 3, 4, 5, 6], (number: any) => {
-            return myActor.sendAndReceive('seekNftsForOwner', nftSalesResponse.nftSales[number].buyerAddress)
+            return P.each(arrIterator, (number: any) => {
+            return myActor.sendAndReceive('seekNftsForOwner', nftSalesResponse.nftSales[number])
                 .then((reply: any) => {
-                console.log(`Actor replied: ${reply}`);
+                    if (reply != undefined) {
+                        // programOutput.push(reply);
+                        console.log(reply);
+                        // console.log(`Actor replied: ${JSON.stringify(reply)}`);
+                    } else {
+                        console.log("Nothing interesting")
+                    }
+
                 });
             });
         })
         .catch((err:any) => {
             console.error(err);
           })
-        .finally(() => actorSystem.destroy());
+            .finally(() => {
+
+                actorSystem.destroy()
+
+//                fs.writeFile("output.json", JSON.stringify(programOutput), 'utf8', function (err: any) {
+//                    if (err) {
+//                        console.log("An error occured while writing JSON Object to File.");
+//                        return console.log(err);
+//                    }
+//
+//                    console.log("JSON file has been saved.");
+//                });
+            });
+
 
         const used = process.memoryUsage().heapUsed / 1024 / 1024;
         console.log(`The script uses approximately ${used} MB`);

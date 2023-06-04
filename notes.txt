@@ -9,9 +9,14 @@ i pozniej get transfers for contract, podzielic na page'e
 ///
 getnftsales - jest buyer i seller address 
 mozna sprawdzic jakie maja getNftsForOwner i cos z tego kontraktu 
+pobieramy w glownym a actor dosaje juz tylko jsona...
+
 
 // budowanie zrodel
 npm run build
++
+npm run start
+
 
 // uzycie clingo doctor co sprawdza obciazenie 
 clinic doctor --autocannon "--" node .\dist\src\index.js

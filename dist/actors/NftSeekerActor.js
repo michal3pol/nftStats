@@ -14,11 +14,21 @@ class NftSeekerActor {
     constructor(alchemyApiService) {
         this.alchemyApiService = alchemyApiService;
     }
-    seekNftsForOwner(buyerAddress) {
+    seekNftsForOwner(nftSale) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("this is me actor and i received this address " + buyerAddress);
-            const nfts = yield this.alchemyApiService.getNftsForOwner(buyerAddress);
-            return "bajo";
+            const rarity = yield this.alchemyApiService.computeRarity(nftSale.contractAddress, nftSale.tokenId);
+            const ultraRarity = rarity.filter(attribute => attribute.prevalence <= 0.001);
+            if (ultraRarity.length == 0) {
+                return;
+            }
+            const data = {
+                attributes: ultraRarity,
+                buyer: nftSale.buyerAddress,
+                seller: nftSale.sellerAddress,
+                isSpam: yield this.alchemyApiService.isSpamContract(nftSale.contractAddress),
+                floorPrice: yield this.alchemyApiService.getFloorPrice(nftSale.contractAddress)
+            };
+            return data;
         });
     }
     static inject() {

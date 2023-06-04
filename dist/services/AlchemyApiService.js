@@ -45,6 +45,16 @@ class AlchemyApiService {
             return yield this.alchemy.nft.getNftsForOwner(owner);
         });
     }
+    isSpamContract(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.alchemy.nft.isSpamContract(address);
+        });
+    }
+    getFloorPrice(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.alchemy.nft.getFloorPrice(address);
+        });
+    }
 }
 exports.AlchemyApiService = AlchemyApiService;
 exports.default = AlchemyApiService;

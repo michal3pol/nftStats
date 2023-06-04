@@ -41,6 +41,7 @@ class Main {
             */
             var actors = require('comedy');
             var P = require('bluebird');
+            const fs = require('fs');
             var actorSystem = actors();
             let options = {
                 marketplace: alchemy_sdk_1.NftSaleMarketplace.SEAPORT,
@@ -51,31 +52,52 @@ class Main {
             //     console.log(nftSalesResponse.nftSales[i].buyerAddress)
             // }
             var actorSystem = actors({
-                resources: ["/dist/src/actors/ActorServiceHelper"]
+                resources: ["/dist/actors/ActorServiceHelper"]
             });
+            // number of responses to search 
+            const N = 10;
+            const arrIterator = Array.from({ length: N }, (_, index) => index + 1);
+            var programOutput;
             actorSystem
                 // Get a root actor reference.
                 .rootActor()
                 // Create a class-defined child actor.
-                .then((rootActor) => rootActor.createChild('/dist/src/actors/NftSeekerActor', {
+                .then((rootActor) => rootActor.createChild('/dist/actors/NftSeekerActor', {
                 mode: 'forked',
-                clusterSize: 3 // Spawn 3 instances of this actor to load-balance over.
+                clusterSize: 3 // Spawn instances of this actor to load-balance over.
             }))
                 .then((myActor) => {
                 // Sequentially send messages to our newly-created actor cluster.
-                // The messages will be load-balanced between 3 forked actors using
+                // The messages will be load-balanced between forked actors using
                 // the default balancing strategy (round-robin).
-                return P.each([0, 1, 2, 3, 4, 5, 6], (number) => {
-                    return myActor.sendAndReceive('seekNftsForOwner', nftSalesResponse.nftSales[number].buyerAddress)
+                return P.each(arrIterator, (number) => {
+                    return myActor.sendAndReceive('seekNftsForOwner', nftSalesResponse.nftSales[number])
                         .then((reply) => {
-                        console.log(`Actor replied: ${reply}`);
+                        if (reply != undefined) {
+                            // programOutput.push(reply);
+                            console.log(reply);
+                            // console.log(`Actor replied: ${JSON.stringify(reply)}`);
+                        }
+                        else {
+                            console.log("Nothing interesting");
+                        }
                     });
                 });
             })
                 .catch((err) => {
                 console.error(err);
             })
-                .finally(() => actorSystem.destroy());
+                .finally(() => {
+                actorSystem.destroy();
+                //                fs.writeFile("output.json", JSON.stringify(programOutput), 'utf8', function (err: any) {
+                //                    if (err) {
+                //                        console.log("An error occured while writing JSON Object to File.");
+                //                        return console.log(err);
+                //                    }
+                //
+                //                    console.log("JSON file has been saved.");
+                //                });
+            });
             const used = process.memoryUsage().heapUsed / 1024 / 1024;
             console.log(`The script uses approximately ${used} MB`);
         });
