@@ -60,8 +60,8 @@ export class Main {
           });
 
         // number of responses to search 
-        const N = 10;
-        const arrIterator = Array.from({ length: N }, (_, index) => index + 1);
+        const noAnalyzedData = nftSalesResponse.nftSales.length;
+        const arrIterator = Array.from({ length: noAnalyzedData }, (_, index) => index + 1);
 
         var programOutput!: UltraRarityData[];
 
@@ -70,8 +70,8 @@ export class Main {
         .rootActor()
         // Create a class-defined child actor.
         .then((rootActor: any) => rootActor.createChild('/dist/actors/NftSeekerActor', {
-            mode: 'forked', // Spawn separate process.
-            clusterSize: 3 // Spawn instances of this actor to load-balance over.
+            mode: 'forked', 
+            clusterSize: 100
         }))
         .then((myActor: any) => {
             // Sequentially send messages to our newly-created actor cluster.

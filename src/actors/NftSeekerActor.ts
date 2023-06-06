@@ -14,7 +14,7 @@ export class NftSeekerActor {
         this.alchemyApiService = alchemyApiService;
     }
 
-    async seekNftsForOwner(nftSale: NftSale) {
+    public async seekNftsForOwner(nftSale: NftSale) {
         const rarity = await this.alchemyApiService.computeRarity(nftSale.contractAddress, nftSale.tokenId)
         const ultraRarity = rarity.filter(
                                 attribute => attribute.prevalence <= 0.001

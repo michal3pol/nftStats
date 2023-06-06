@@ -1,5 +1,6 @@
 {
     "NftSeekerActor": {
-      "mode": "in-memory"
+      "mode": "forked",
+      "cluster-size": 50
     }
 }

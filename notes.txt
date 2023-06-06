@@ -19,5 +19,5 @@ npm run start
 
 
 // uzycie clingo doctor co sprawdza obciazenie 
-clinic doctor --autocannon "--" node .\dist\src\index.js
+clinic doctor --autocannon "--" node .\dist\index.js
 

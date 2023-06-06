@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\dist",
+    "\\models",
+    "\\src",
+    "\\src\\actors",
+    "\\src\\services",
+    "\\src\\utils"
+  ],
+  "SelectedNode": "\\src\\main.ts",
+  "PreviewInSolutionExplorer": false
+}
